@@ -396,7 +396,17 @@ def NewPersonNSDL(all_details):
         driver.find_element_by_id('fal_name').send_keys(father_last_name)
         
         driver.find_element_by_id('faf_name').click()
-        driver.find_element_by_id('faf_name').send_keys(all_details["Father's Last Name"].replace(father_last_name, ""))
+        faf_name = ""
+        if (len(father_name)) != 1:
+            father_name.pop()
+
+        for n in father_name:
+            faf_name += n
+            faf_name += " "
+        
+        faf_name = faf_name[:-1]
+
+        driver.find_element_by_id('faf_name').send_keys(faf_name)
 
 
 
@@ -637,7 +647,18 @@ def CorrectionPersonNSDL(all_details):
         driver.find_element_by_id('fatherlastName').send_keys(father_last_name)
 
         driver.find_element_by_id('fatherfirstName').click()
-        driver.find_element_by_id('fatherfirstName').send_keys(all_details["Father's Last Name"].replace(father_last_name, ""))
+
+        faf_name = ""
+        if (len(father_name)) != 1:
+            father_name.pop()
+
+        for n in father_name:
+            faf_name += n
+            faf_name += " "
+        
+        faf_name = faf_name[:-1]
+
+        driver.find_element_by_id('fatherfirstName').send_keys(faf_name)
 
         driver.find_element_by_id('crSubmitBtn').click()
 
