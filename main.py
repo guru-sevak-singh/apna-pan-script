@@ -24,6 +24,14 @@ import platform
 import pandas as pd
 
 
+def get_last_name(name):
+    return name.split()[-1]
+
+def get_first_name(name):
+    last_name = get_last_name(name)
+    last_name_len = len(last_name)
+    first_name = name[:-(last_name_len+1)]
+    return first_name
 
 
 def check_system_bit():
@@ -228,13 +236,20 @@ def LoginNSDL():
     try:
         driver.execute_script(f"window.open('https://www.onlineservices.nsdl.com/paam/', 'newwindow')")
         driver.switch_to.window(driver.window_handles[1])
-        # time.sleep(3)
+
+        
+        time.sleep(3)
+        try:
+            driver.find_element_by_id('onetrust-accept-btn-handler').click()
+        except:
+            pass
+
         try:
             alert = driver.switch_to.alert
             alert.accept()
         except:
             pass
-
+        
         user_id = driver.find_element_by_id('userID')
         user_id.send_keys(NsdlID())
         password = driver.find_element_by_id('password')
@@ -263,7 +278,6 @@ def LoginNSDL():
                     while True:
                         driver.find_element_by_id('captcha').click()
                         cap_box = len(driver.find_element_by_id('captcha').get_attribute("value"))
-                        print(cap_box)
                         if cap_box == 5:
                             driver.find_element_by_id('submit_btn').click()
                             break
@@ -329,9 +343,6 @@ def LoginNSDL():
         return True
 
     except Exception as e:
-        print('\n\n\n\n\n\n\n')
-        print(e)
-        print('\n\n\n\n\n\n\n')
         command=f'mshta vbscript:Execute("CreateObject(""WScript.Shell"").Popup ""{e}"", 0, ""Information"":close")'
         subprocess.Popen(command)
         return False
@@ -387,26 +398,19 @@ def NewPersonNSDL(all_details):
 
 
         father_name = all_details["Father's Last Name"]
-        father_name = father_name.split(" ")
-        father_name_len = len(father_name)
 
-        father_last_name = father_name[father_name_len - 1]
+        # get last name
+        father_last_name = get_last_name(father_name)
 
         driver.find_element_by_id('fal_name').click()
         driver.find_element_by_id('fal_name').send_keys(father_last_name)
         
         driver.find_element_by_id('faf_name').click()
-        faf_name = ""
-        if (len(father_name)) != 1:
-            father_name.pop()
-
-        for n in father_name:
-            faf_name += n
-            faf_name += " "
         
-        faf_name = faf_name[:-1]
+        # get first name
+        father_first_name = get_first_name(father_name)
+        driver.find_element_by_id('faf_name').send_keys(father_first_name)
 
-        driver.find_element_by_id('faf_name').send_keys(faf_name)
 
 
 
@@ -638,27 +642,19 @@ def CorrectionPersonNSDL(all_details):
         driver.find_element_by_id('firstName').send_keys(f_name)
 
         father_name = all_details["Father's Last Name"]
-        father_name = father_name.split(" ")
-        father_name_len = len(father_name)
 
-        father_last_name = father_name[father_name_len - 1]
+        # get last name
+        father_last_name = get_last_name(father_name)
 
         driver.find_element_by_id('fatherlastName').click()
         driver.find_element_by_id('fatherlastName').send_keys(father_last_name)
 
         driver.find_element_by_id('fatherfirstName').click()
 
-        faf_name = ""
-        if (len(father_name)) != 1:
-            father_name.pop()
+        # get first name
+        father_first_name = get_first_name(father_name)
 
-        for n in father_name:
-            faf_name += n
-            faf_name += " "
-        
-        faf_name = faf_name[:-1]
-
-        driver.find_element_by_id('fatherfirstName').send_keys(faf_name)
+        driver.find_element_by_id('fatherfirstName').send_keys(father_first_name)
 
         driver.find_element_by_id('crSubmitBtn').click()
 
@@ -836,11 +832,12 @@ def GeneratePNumber(file_name):
 def EnterNSDLResult(status, message):
     if status == False:
         if message == 'Demographic authentication failed as the details (Name, DOB & Gender) entered by you are not matching with the details available in UIDAI database.Please recheck the details entered by you. If there is any error, then please capture details once again to generate a new receipt;If the details entered are correct, please proceed with biometric authentication using biometric device installed at your Centre (Protean TIN-FC/PAN Centre) by selecting biometric option shown above.':
-            message = 'Aadhar Demographic Error (Name,DOB,Gender,Aadhar No)   "Aadhar data not match"  (ONLINE FORM JO AAP FILL KIYE HAI USME AADHAR NUMBER, NAME,SPELLING,GENDER,SPACE ) YA NEW AADHAR CARD DOWNLOAD KAR CHECK KAREN-'
+            # message = 'Aadhar Demographic Error (Name,DOB,Gender,Aadhar No)   "Aadhar data not match"  (ONLINE FORM JO AAP FILL KIYE HAI USME AADHAR NUMBER, NAME,SPELLING,GENDER,SPACE ) YA NEW AADHAR CARD DOWNLOAD KAR CHECK KAREN-'
+            message = 'Please Wait Sometime for acknowledgement! Slip'
             time.sleep(1)
             driver.switch_to.window(driver.window_handles[0])
             sel = Select(driver.find_element_by_id('Status'))
-            sel.select_by_value("2")
+            sel.select_by_value("5")
             
             driver.find_element_by_name('Remarks').clear()
             driver.find_element_by_name('Remarks').send_keys(message)
@@ -853,7 +850,7 @@ def EnterNSDLResult(status, message):
             time.sleep(1)
             driver.switch_to.window(driver.window_handles[0])
             sel = Select(driver.find_element_by_id('Status'))
-            sel.select_by_value("2")
+            sel.select_by_value("5")
             
             driver.find_element_by_name('Remarks').clear()
             driver.find_element_by_name('Remarks').send_keys(message)
@@ -882,7 +879,7 @@ def EnterNSDLResult(status, message):
             time.sleep(1)
             driver.switch_to.window(driver.window_handles[0])
             sel = Select(driver.find_element_by_id('Status'))
-            sel.select_by_value("2")
+            sel.select_by_value("5")
             
             driver.find_element_by_name('Remarks').clear()
             driver.find_element_by_name('Remarks').send_keys(message)
