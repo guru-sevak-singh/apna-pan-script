@@ -1,0 +1,34 @@
+# PAN Card Automation – Python Dependencies
+# Install with: pip install -r requirements.txt
+
+# Selenium 4.x (modern API – no more find_element_by_* methods)
+selenium>=4.18.0
+
+# Automatically downloads the correct ChromeDriver for your Chrome version
+webdriver-manager>=4.0.1
+
+# PDF reading/parsing
+PyMuPDF>=1.23.0          # imported as `fitz`
+
+# Windows COM / pywin32 (for reading Chrome version from registry)
+pywin32>=306
+
+# GUI automation (for right-click download of acknowledgement PDF)
+pyautogui>=0.9.54
+
+# HTTP requests
+requests>=2.31.0
+
+# File download helper
+wget>=3.2
+
+# Data manipulation
+pandas>=2.2.0
+lxml>=5.1.0              # required by pandas.read_html
+
+# Excel/HTML table parsing backend for pandas.read_html
+html5lib>=1.1
+
+beautifulsoup4>=4.12.0
+
+auto-py-to-exe
